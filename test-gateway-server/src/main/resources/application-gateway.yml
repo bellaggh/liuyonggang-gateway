@@ -1,0 +1,31 @@
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: gateway1 #id是唯一的
+          uri: http://localhost:10001
+          predicates:
+          - Path=/api/client/**
+          #- Weight=service,40
+          #- Cookie=test,123456
+          #- Method= POST
+          #- Header=test,(.*?)
+          filters:
+          - StripPrefix=2
+          - name: RequestRateLimiter
+            args:
+              key-resolver: '#{@myRemoteAddrKeyResolver}'
+              redis-rate-limiter.replenishRate: 1
+              redis-rate-limiter.burstCapacity: 2
+#        - id: gateway-client2 #id是唯一的
+#          #uri: lb://gateway-client #被代理的服务的uri
+#          uri: lb://gateway-client2
+#          predicates:
+#          - Path=/api/client/**
+#          - Weight=service,9
+#          #- Cookie=test,123456
+#          #- Method= POST
+#          #- Header=test,(.*?)
+#          filters:
+#          - StripPrefix=2
+
